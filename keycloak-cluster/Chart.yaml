@@ -1,0 +1,6 @@
+apiVersion: v2
+name: keycloak-cluster
+description: A Helm chart for deploying Keycloak cluster instances via the Keycloak Operator CRD
+type: application
+version: 26.5.2
+appVersion: "26.5.2"

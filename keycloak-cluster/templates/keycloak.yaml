@@ -1,0 +1,148 @@
+apiVersion: k8s.keycloak.org/v2alpha1
+kind: Keycloak
+metadata:
+  name: {{ include "keycloak-cluster.fullname" . }}
+  namespace: {{ .Release.Namespace }}
+  labels:
+    {{- include "keycloak-cluster.labels" . | nindent 4 }}
+spec:
+  # =========================================================================
+  # INSTANCES & HIGH AVAILABILITY
+  # =========================================================================
+  instances: {{ .Values.instances }}
+
+  # =========================================================================
+  # DATABASE CONFIGURATION
+  # =========================================================================
+  db:
+    vendor: {{ .Values.db.vendor }}
+    host: {{ .Values.db.host }}
+    port: {{ .Values.db.port }}
+    database: {{ .Values.db.database }}
+    usernameSecret:
+      name: {{ .Values.db.usernameSecret.name }}
+      key: {{ .Values.db.usernameSecret.key }}
+    passwordSecret:
+      name: {{ .Values.db.passwordSecret.name }}
+      key: {{ .Values.db.passwordSecret.key }}
+    {{- if .Values.db.poolInitialSize }}
+    poolInitialSize: {{ .Values.db.poolInitialSize }}
+    {{- end }}
+    {{- if .Values.db.poolMinSize }}
+    poolMinSize: {{ .Values.db.poolMinSize }}
+    {{- end }}
+    {{- if .Values.db.poolMaxSize }}
+    poolMaxSize: {{ .Values.db.poolMaxSize }}
+    {{- end }}
+
+  # =========================================================================
+  # HTTP/TLS CONFIGURATION
+  # =========================================================================
+  http:
+    httpEnabled: {{ .Values.http.httpEnabled }}
+    {{- with .Values.http.labels }}
+    labels:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.http.annotations }}
+    annotations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+
+  # =========================================================================
+  # HOSTNAME CONFIGURATION
+  # =========================================================================
+  hostname:
+    strict: {{ .Values.hostname.strict }}
+    hostname: {{ .Values.hostname.hostname }}
+    backchannelDynamic: {{ .Values.hostname.backchannelDynamic }}
+
+  # =========================================================================
+  # PROXY CONFIGURATION
+  # =========================================================================
+  proxy:
+    headers: {{ .Values.proxy.headers }}
+
+  # =========================================================================
+  # INGRESS CONFIGURATION
+  # =========================================================================
+  ingress:
+    enabled: {{ .Values.ingress.enabled }}
+
+  # =========================================================================
+  # RESOURCE REQUIREMENTS
+  # =========================================================================
+  {{- with .Values.resources }}
+  resources:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # =========================================================================
+  # SCHEDULING & AFFINITY
+  # =========================================================================
+  {{- with .Values.scheduling }}
+  scheduling:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # =========================================================================
+  # PROBE CONFIGURATION
+  # =========================================================================
+  {{- with .Values.readinessProbe }}
+  readinessProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.livenessProbe }}
+  livenessProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  {{- with .Values.startupProbe }}
+  startupProbe:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # =========================================================================
+  # NETWORK POLICIES
+  # =========================================================================
+  networkPolicy:
+    enabled: {{ .Values.networkPolicy.enabled }}
+
+  # =========================================================================
+  # UPDATE STRATEGY
+  # =========================================================================
+  {{- with .Values.update }}
+  update:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}
+
+  # =========================================================================
+  # FEATURES CONFIGURATION
+  # =========================================================================
+  {{- with .Values.features }}
+  features:
+    {{- if .enabled }}
+    enabled:
+      {{- toYaml .enabled | nindent 6 }}
+    {{- end }}
+    {{- if .disabled }}
+    disabled:
+      {{- toYaml .disabled | nindent 6 }}
+    {{- end }}
+  {{- end }}
+
+  # =========================================================================
+  # ADMIN BOOTSTRAPPING
+  # =========================================================================
+  bootstrapAdmin:
+    user:
+      secret: {{ .Values.bootstrapAdmin.user.secretName }}
+
+  # =========================================================================
+  # ADVANCED CONFIGURATION OPTIONS
+  # =========================================================================
+  {{- with .Values.additionalOptions }}
+  additionalOptions:
+    {{- toYaml . | nindent 4 }}
+  {{- end }}

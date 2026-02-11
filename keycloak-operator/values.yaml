@@ -1,0 +1,59 @@
+# Keycloak Operator Helm Chart Values
+
+# CRD installation settings
+crds:
+  # Install the Keycloak CRD
+  keycloak:
+    enabled: true
+  # Install the KeycloakRealmImport CRD
+  keycloakRealmImport:
+    enabled: true
+
+# Operator image settings
+image:
+  repository: quay.io/keycloak/keycloak-operator
+  tag: "26.5.2"
+  pullPolicy: Always
+
+# Keycloak image used by the operator when creating Keycloak instances
+keycloakImage: quay.io/keycloak/keycloak:26.5.2
+
+# Image pull secrets (optional)
+imagePullSecrets: []
+
+# Number of operator replicas
+replicaCount: 1
+
+# ServiceAccount settings
+serviceAccount:
+  # Annotations to add to the service account
+  annotations: {}
+
+# Resource limits and requests
+resources:
+  limits:
+    cpu: 700m
+    memory: 450Mi
+  requests:
+    cpu: 300m
+    memory: 450Mi
+
+# Pod annotations
+podAnnotations: {}
+
+# Node selector
+nodeSelector: {}
+
+# Tolerations
+tolerations: []
+
+# Affinity rules
+affinity: {}
+
+# Watch namespaces - set to specific namespace or leave as JOSDK_WATCH_CURRENT for current namespace only
+watchNamespaces: JOSDK_WATCH_CURRENT
+
+# RBAC settings
+rbac:
+  # Create cluster-scoped RBAC resources (ClusterRole, ClusterRoleBinding)
+  clusterScoped: true

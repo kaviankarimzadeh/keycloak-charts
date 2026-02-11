@@ -1,0 +1,13 @@
+{{/*
+CRDs are stored in the crds/ folder and are installed automatically by Helm.
+However, to provide control over which CRDs to install, we use templates here.
+Note: Helm's crds/ folder installs CRDs automatically on install but not on upgrade.
+For better control, we template them here.
+*/}}
+{{- if .Values.crds.keycloak.enabled }}
+{{ .Files.Get "crds/keycloaks.k8s.keycloak.org-v1.yml" }}
+{{- end }}
+---
+{{- if .Values.crds.keycloakRealmImport.enabled }}
+{{ .Files.Get "crds/keycloakrealmimports.k8s.keycloak.org-v1.yml" }}
+{{- end }}

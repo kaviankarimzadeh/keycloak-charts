@@ -1,0 +1,93 @@
+# =========================================================================
+# INSTANCES & HIGH AVAILABILITY
+# =========================================================================
+instances: 3
+
+# =========================================================================
+# DATABASE CONFIGURATION
+# =========================================================================
+db:
+  vendor: postgres
+  host: postgresql
+  port: 5432
+  database: keycloak
+  # Reference to existing secret for DB credentials
+  usernameSecret:
+    name: keycloak-db-secret
+    key: username
+  passwordSecret:
+    name: keycloak-db-secret
+    key: password
+  # Connection pool configuration for production
+  poolInitialSize: 10
+  poolMinSize: 20
+  poolMaxSize: 40
+
+# Create DB secret (set to false if using existing secret)
+dbSecret:
+  create: false
+
+# =========================================================================
+# HOSTNAME CONFIGURATION
+# =========================================================================
+hostname:
+  strict: true
+  hostname: keycloak.achaemenid.nl
+  backchannelDynamic: false
+
+# =========================================================================
+# GATEWAY API - HTTPRoute
+# =========================================================================
+httpRoute:
+  enabled: true
+  parentRefs:
+    - name: public-gw
+      namespace: kgateway-system
+
+# =========================================================================
+# RESOURCE REQUIREMENTS (PRODUCTION)
+# =========================================================================
+resources:
+  requests:
+    cpu: 100m
+    memory: 1000Mi
+  limits:
+    cpu: 2000m
+    memory: 1500Gi
+
+# =========================================================================
+# ADMIN BOOTSTRAPPING
+# =========================================================================
+bootstrapAdmin:
+  user:
+    secretName: keycloak-admin-secret
+
+# Create admin secret (set to false if using existing secret)
+adminSecret:
+  create: false
+  username: admin
+  password: changeme
+
+# =========================================================================
+# ADVANCED CONFIGURATION OPTIONS
+# =========================================================================
+additionalOptions:
+  # Security Hardening
+  - name: security-headers-enabled
+    value: "true"
+  # Performance & Caching
+  - name: cache
+    value: "ispn"
+  # Logging
+  - name: log
+    value: "console"
+  - name: log-level
+    value: "WARN"
+  - name: log-format
+    value: "json"
+  # Metrics
+  - name: metrics-enabled
+    value: "true"
+  # HTTP Client Timeouts
+  - name: http-client-default-socket-timeout
+    value: "5000"
