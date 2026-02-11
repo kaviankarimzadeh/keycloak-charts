@@ -64,10 +64,24 @@ spec:
     headers: {{ .Values.proxy.headers }}
 
   # =========================================================================
-  # INGRESS CONFIGURATION
+  # INGRESS CONFIGURATION (Operator-managed)
   # =========================================================================
   ingress:
     enabled: {{ .Values.ingress.enabled }}
+    {{- if .Values.ingress.className }}
+    className: {{ .Values.ingress.className }}
+    {{- end }}
+    {{- with .Values.ingress.annotations }}
+    annotations:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- with .Values.ingress.labels }}
+    labels:
+      {{- toYaml . | nindent 6 }}
+    {{- end }}
+    {{- if .Values.ingress.tlsSecret }}
+    tlsSecret: {{ .Values.ingress.tlsSecret }}
+    {{- end }}
 
   # =========================================================================
   # RESOURCE REQUIREMENTS

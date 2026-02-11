@@ -69,10 +69,20 @@ proxy:
   headers: xforwarded
 
 # =========================================================================
-# INGRESS CONFIGURATION (DISABLED - Using Gateway API)
+# INGRESS CONFIGURATION (Operator-managed) - Disabled by default
+# When enabled, the Keycloak Operator creates an Ingress for you
 # =========================================================================
 ingress:
   enabled: false
+  # Ingress class name (e.g., nginx, traefik)
+  className: ""
+  # Additional annotations for the Ingress
+  annotations: {}
+    # cert-manager.io/cluster-issuer: letsencrypt-prod
+  # Additional labels for the Ingress
+  labels: {}
+  # TLS secret for re-encrypt or TLS termination
+  tlsSecret: ""
 
 # =========================================================================
 # GATEWAY API - HTTPRoute
